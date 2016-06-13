@@ -45,6 +45,7 @@ There are only 4 types of macro substitutions performed.
 | `$x`      | The value of the symbol x is substituted.                      |
 | `$(expr)` | The result of the JavaScript expression is placed in the text. |
 
+
 ### `$$`
 
 Two dollar-signs in a row are replaced with a single dollar-sign (`$`)
@@ -73,9 +74,9 @@ dollar-sign).
 ### `$(expr)`
 
 The result of the JavaScript expression `expr` is placed in the text.
-The JavaScript expression must have a balanced number of parenthesis,
-(), and square brackets, [].  Also, quoted string literals must
-be terminated properly.  The JavaScript expression itself will
+The JavaScript expression must have a balanced number of parenthesis, `()`,
+square brackets, `[]`, and curly braces `{}`.  Also, quoted string literals
+must be terminated properly.  The JavaScript expression itself will
 not be preprocessed.
 
     $   var x = 3
@@ -99,7 +100,7 @@ replaced.  These are all appended to the `out` variable.
 Normal text is converted to a string, and $$ is converted to a single
 dollar-sign within such text.
 
-    out += "text\n...";
+    out += "text\n..."
 
 ### `$x` 
 
@@ -107,21 +108,21 @@ dollar-sign within such text.
 
 ### `$(expr)`
 
-    out += expr;
+    out += expr
 
 For example, the lines...
 
-    $ var i = 1;
-    $ var j = 2;
+    $ var i = 1
+    $ var j = 2
     i plus j = $i + $j = $(i+j)
     The first command line argument is $0
 
 ...result in the generated the JavaScript...
 
-    var i = 1;
-    var j = 2;
-    out += "i plus j = " + i + " + " + j + " = " + (i+j) + "\n";
-    out += "The first command line argument is " + argv[0] + "\n";
+    var i = 1
+    var j = 2
+    out += "i plus j = " + i + " + " + j + " = " + (i+j) + "\n"
+    out += "The first command line argument is " + argv[0] + "\n"
 
 
 JavaScript Evaluation
@@ -130,10 +131,10 @@ After the JavaScript is generated, it is evaluated (if desired).  Before it's
 evaluated, the following variables are defined, so they can be used in the
 generated program:
 
-    var fs = require('fs');
+    var fs = require('fs')
     var argv = []               // contains the arguments being processed
     var globalData = {}
-    var out = "";
+    var out = ""
 
 
 Support Functions
@@ -142,7 +143,7 @@ js4m provides functions that can be called directly from JavaScript, including
 the generated JavaScript of a preprocessed file.
 
 
-### `var js4m = require('js4m');`
+### `var js4m = require('js4m')`
 
 Loads js4m for use in a JavaScript program.  In a text file being preprocessed,
 this is not necessary because the functions can be called directly
@@ -156,8 +157,12 @@ an error will be displayed.
 
 
 ### `js4m.get('x', default)`
-Gets GlobalData in strict mode.  The global variable will be set from
+Gets `globalData` in strict mode.  The global variable will be set from
 the default if it's undefined.
+
+
+### `js4m.set('x', value)`
+Sets `globalData`.  The global variable will be set to `value`.
 
 
 ### `js4m.include(filename [, argv])`
