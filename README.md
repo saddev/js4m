@@ -43,7 +43,7 @@ There are only a few types of macro substitutions performed.
 | `$$`      | Is substituted with `$`.                                       |
 | `$ ...`   | When `$` and a space begin the line, the rest is JavaScript.   |
 | `$x`      | The value of the variable x is placed in the text.             |
-| `$expr    | Very simple expression with no operators.                      |
+| `$expr`   | Very simple expression with no operators.                      |
 | `$(expr)` | The result of the JavaScript expression is placed in the text. |
 
 
