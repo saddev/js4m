@@ -1,0 +1,26 @@
+$ var x = 'Hi'
+$ var y = env('Y', '??? "Y" not-found???')
+$x $y
+$ var i = 1
+$ var j = 2
+$i + $j = $(i+j)
+argv.length = $argv.length
+$ if (argv.length > 1)
+$ {
+argv 0 and 1 => $0 $1 $argv[0]
+$ }
+$ globalData.x = 20
+$ function ident(s) { return '***' + s + '***' }
+hello $"stuff" is ok, but "stuff" isn't evaluated
+
+i plus j = $i + $j = $(i+j)
+The first command line argument is "$0"
+
+$x
+$ var obj = { a: {x:'Hi', y:'X'}, b: 'There' }
+$obj.a.x $obj.b
+$obj['a'].x $obj['b'];
+The JSON of obj = $JSON.stringify(obj)
+$ function f()  { return "Hi" }
+$f() $obj.a.x
+$ident('The End')

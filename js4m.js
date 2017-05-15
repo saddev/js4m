@@ -2,7 +2,7 @@
 
 // The MIT License (MIT)
 // 
-// Copyright (c) 2015 Scot Dietz
+// Copyright (c) 2015-2016 Scot Dietz
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,7 +28,6 @@
 // Packages
 var fs = require('fs')
 var path = require('path')
-var replaceAll = require('replaceall')
 
 // Externally accessible procedures
 exports.env = env
@@ -186,17 +185,6 @@ function isIdChar(ch)
 }
 
 
-/*
-function isIdChar(ch)
-{
-    return (ch >= '0' && ch <= '9') ||
-           (ch >= 'A' && ch <= 'Z') ||
-           (ch >= 'a' && ch <= 'z') ||
-           ch == '_'
-}
-*/
-
-
 /// \brief  Find a matching Delimiting character.
 ///
 /// Searches the string for the specified delimiter, but nested
@@ -294,6 +282,27 @@ function line2js(line)
                 while (off < len && line.charAt(off) >= '0' && line.charAt(off) <= '9')
                     ++off
                 rets += prefix + 'argv[' + line.substring(idx, off) + ']'
+            }
+            while (true)
+            {
+                if (off >= len)
+                    break;
+                ch = line.charAt(off);
+                var sidx = off;
+                if (ch == '.' && isIdChar(line.charAt(off+1)) &&
+                    (line.charAt(off+1) < '0' || line.charAt(off+1) > '9'))
+                {
+                    for (++off; off < len && isIdChar(line.charAt(off)); ++off)
+                    {}
+                    rets += line.substring(sidx, off);
+                }
+                else if (ch == '(' || ch == '[')
+                {
+                    off = findMatching(line, sidx + 1, ch);
+                    rets += line.substr(sidx, off - sidx);
+                }
+                else
+                    break;
             }
             prefix = ' + '
         }
@@ -590,45 +599,6 @@ function main()
                             (args.js) ? text2js(lines, argv) :
                                         processString(lines, argv))
     }, getUsage())
-    
-    /*
-    readFileString(inputFile, function(err, data) {
-        if (err)
-            console.log(err)
-        else
-        {
-            if (args.js)
-                writeFileString(outputFile, text2js(data, argv))
-            else
-                writeFileString(outputFile, processString(data, argv))
-        }
-    })
-    */
-
-    /*
-    console.log(JSON.stringify(args))
-    
-    console.log(text2js("$ x = 5\n"))
-    console.log(text2js("$ x = 5"))
-    console.log(text2js("Hi there $SCOT\n"))
-    console.log(text2js("Hi there $SCOT"))
-    console.log(text2js("Hi there $('Scot')\n"))
-    console.log(text2js("Hi there $('Scot')"))
-    console.log(text2js("Hi there $SCOT$DIETZ\nAgain$\n"))
-    console.log(text2js("Hi there $SCOT$DIETZ\nAgain$"))
-    var lines = "$\n"
-    lines +=    "$ var x = 'Hi'\n"
-    lines +=    "$ var y = env('Y') //'There'\n"
-    lines +=    "$ var i = 1\n"
-    lines +=    "$ var j = 2\n"
-    lines +=    "$x $y\n"
-    lines +=    "$i + $j = $(i+j)\n"
-    lines +=    "$0 $1\n"
-    lines +=    "$ globalData.x = 10\n"
-    lines +=    "$(include('test.txt', ['hi','there']))\n"
-    lines +=    "$(globalData.x)\n"
-    console.log(processString(lines,['hx','thx']))
-    */
 }
 
 

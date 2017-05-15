@@ -1,0 +1,2 @@
+$ var datetime = require('node-datetime').create()
+The current date and time is $datetime.format('Y-m-d H:M:S').

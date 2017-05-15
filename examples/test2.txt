@@ -1,0 +1,9 @@
+$ var argv = ['hx', 'thx']
+$ var x = 'Hi'
+$ var y = env('Y','There')
+$x $y
+$0 $1
+$ globalData.x = 10         // not in strict mode now
+$include('test.txt', ['hi','there'])
+$(globalData.x)
+

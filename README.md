@@ -9,7 +9,7 @@ can be invoked from the command line or called from a JavaScript program.
 
 The problem with many macro languages is that they don't use a well-known
 language with a large number of libraries and utilities to support it.  This
-adds unnecessary complexity, and a learning curve that's hard to justify.
+adds unnecessary complexity and a learning curve that's hard to justify.
 Those kinds of macro languages will always be very limited.
 
 Node.js can be used to run js4m and the JavaScript code it generates.
@@ -36,19 +36,21 @@ js4m Console Program (using Node.js)
 Variables and Expressions
 -------------------------
 
-There are only 4 types of macro substitutions performed.
+There are only a few types of macro substitutions performed.
 
 | Macro     | Description                                                    |
 |-----------|----------------------------------------------------------------|
 | `$$`      | Is substituted with `$`.                                       |
 | `$ ...`   | When `$` and a space begin the line, the rest is JavaScript.   |
-| `$x`      | The value of the symbol x is substituted.                      |
+| `$x`      | The value of the variable x is placed in the text.             |
+| `$expr    | Very simple expression with no operators.                      |
 | `$(expr)` | The result of the JavaScript expression is placed in the text. |
 
 
 ### `$$`
 
 Two dollar-signs in a row are replaced with a single dollar-sign (`$`)
+
 
 ### `$ javascript...`
 
@@ -60,16 +62,31 @@ the rest of the line is used as JavaScript to execute.
     some text used when x = y
     $ }
 
+    
 ### `$x`
 
-The value of the variable `x` replaces `$x` in the text.  If x is a number,
-the value of argv[x] is substituted.  Either x is an integer or the symbol
-must be a valid JavaScript variable name (that doesn't start with a
-dollar-sign).
+The value of `x` replaces `$x` in the text.  If x is a number, the value of
+argv[x] is substituted.  Either x is an integer or the symbol must be a valid
+JavaScript variable name (that doesn't start with a dollar-sign).
 
     $   var x = 'Hi'
     $   var y = 'There'
     Just say $x $y
+
+
+### `$expr`
+
+A simple expression starts with a variable name and is followed by any number
+of the following in succession:
+
+   - `.x      ` A period followed by a variable name.
+   - `(expr)  ` A parameter list/expressions in parenthesis (`()`).
+   - `[expr]  ` An array index expression in square brackets (`[]`).
+
+    $   var obj = { x:{a:1, b:2}, y:'hi' }
+    $   function f() { return 'a + b = ' }
+    $f() $obj.x.a + $obj.x.b = $(obj.x.a + obj.x.b)
+
 
 ### `$(expr)`
 
@@ -90,6 +107,7 @@ Each line of input text is preprocessed separately generating a single line
 of JavaScript output.  This means that an error occurring at a particular line
 in the generated file will correspond to the same line in the source file.
 
+
 ### `$ javascript...`
 
 Generates a line containing the JavaScript `javascript...`
@@ -106,6 +124,20 @@ dollar-sign within such text.
 
     out += x
 
+
+### `$expr`
+
+    out += expr
+    
+For example, the line...
+
+    $f() $obj.x.a
+    
+...results in the generated JavaScript...
+
+    out += f() + " " + obj.x.a + "\n"
+
+
 ### `$(expr)`
 
     out += expr
@@ -117,7 +149,7 @@ For example, the lines...
     i plus j = $i + $j = $(i+j)
     The first command line argument is $0
 
-...result in the generated the JavaScript...
+...result in the generated JavaScript...
 
     var i = 1
     var j = 2
